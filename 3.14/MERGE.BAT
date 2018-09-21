@@ -1,0 +1,46 @@
+@ECHO OFF
+REM 結合バッチファイル：div2.exe により生成
+
+ECHO 分割されたファイルを復元します
+
+IF NOT EXIST "GITBUC~2.001"  GOTO ERR1
+IF NOT EXIST "GITBUC~2.002"  GOTO ERR1
+IF NOT EXIST "GITBUC~2.003"  GOTO ERR1
+IF NOT EXIST "GITBUC~2.004"  GOTO ERR1
+IF     EXIST "gitbucket-3.14.war"  GOTO ERR2
+
+COPY "GITBUC~2.001" "GITBUC~2.WAR"
+IF ERRORLEVEL 1 GOTO ERR3
+COPY /B "GITBUC~2.WAR"+"GITBUC~2.002"+"GITBUC~2.003"+"GITBUC~2.004"
+IF ERRORLEVEL 1 GOTO ERR3
+
+DEL "GITBUC~2.001"
+DEL "GITBUC~2.002"
+DEL "GITBUC~2.003"
+DEL "GITBUC~2.004"
+
+
+REN "GITBUC~2.WAR" "gitbucket-3.14.war"
+
+ECHO このバッチファイルも消してください
+GOTO END
+
+:ERR1
+ECHO ファイルが一部存在しません
+ECHO 処理を中止します
+GOTO END
+
+:ERR2
+ECHO 復元先のファイルが既に存在しています
+ECHO 処理を中止します
+GOTO END
+
+:ERR3
+ECHO 復元に失敗しました
+ECHO 処理を中止します
+GOTO END
+
+:END
+ECHO 終了するには、何かキーを押してください
+PAUSE >NUL
+
